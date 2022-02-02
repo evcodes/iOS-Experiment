@@ -1,10 +1,10 @@
 # this is an auto generated file. This will be overwritten
-query GetTask($id: ID!) {
-  getTask(id: $id) {
+query GetTodo($id: ID!) {
+  getTodo(id: $id) {
     id
-    title
+    name
+    priority
     description
-    status
     createdAt
     updatedAt
     _version
@@ -12,17 +12,17 @@ query GetTask($id: ID!) {
     _lastChangedAt
   }
 }
-query ListTasks(
-  $filter: ModelTaskFilterInput
+query ListTodos(
+  $filter: ModelTodoFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listTasks(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listTodos(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      title
+      name
+      priority
       description
-      status
       createdAt
       updatedAt
       _version
@@ -33,13 +33,13 @@ query ListTasks(
     startedAt
   }
 }
-query SyncTasks(
-  $filter: ModelTaskFilterInput
+query SyncTodos(
+  $filter: ModelTodoFilterInput
   $limit: Int
   $nextToken: String
   $lastSync: AWSTimestamp
 ) {
-  syncTasks(
+  syncTodos(
     filter: $filter
     limit: $limit
     nextToken: $nextToken
@@ -47,64 +47,9 @@ query SyncTasks(
   ) {
     items {
       id
-      title
+      name
+      priority
       description
-      status
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-    nextToken
-    startedAt
-  }
-}
-query GetNote($id: ID!) {
-  getNote(id: $id) {
-    id
-    content
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-  }
-}
-query ListNotes(
-  $filter: ModelNoteFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listNotes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      content
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-    }
-    nextToken
-    startedAt
-  }
-}
-query SyncNotes(
-  $filter: ModelNoteFilterInput
-  $limit: Int
-  $nextToken: String
-  $lastSync: AWSTimestamp
-) {
-  syncNotes(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    lastSync: $lastSync
-  ) {
-    items {
-      id
-      content
       createdAt
       updatedAt
       _version

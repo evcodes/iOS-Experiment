@@ -14,4 +14,9 @@ struct amplifyExperimentApp: App {
             ContentView()
         }
     }
+
+    // add a default initializer and configure Amplify
+    init() {
+        configureAmplify()
+    }
 }

@@ -1,13 +1,13 @@
 # this is an auto generated file. This will be overwritten
-mutation CreateTask(
-  $input: CreateTaskInput!
-  $condition: ModelTaskConditionInput
+mutation CreateTodo(
+  $input: CreateTodoInput!
+  $condition: ModelTodoConditionInput
 ) {
-  createTask(input: $input, condition: $condition) {
+  createTodo(input: $input, condition: $condition) {
     id
-    title
+    name
+    priority
     description
-    status
     createdAt
     updatedAt
     _version
@@ -15,15 +15,15 @@ mutation CreateTask(
     _lastChangedAt
   }
 }
-mutation UpdateTask(
-  $input: UpdateTaskInput!
-  $condition: ModelTaskConditionInput
+mutation UpdateTodo(
+  $input: UpdateTodoInput!
+  $condition: ModelTodoConditionInput
 ) {
-  updateTask(input: $input, condition: $condition) {
+  updateTodo(input: $input, condition: $condition) {
     id
-    title
+    name
+    priority
     description
-    status
     createdAt
     updatedAt
     _version
@@ -31,57 +31,15 @@ mutation UpdateTask(
     _lastChangedAt
   }
 }
-mutation DeleteTask(
-  $input: DeleteTaskInput!
-  $condition: ModelTaskConditionInput
+mutation DeleteTodo(
+  $input: DeleteTodoInput!
+  $condition: ModelTodoConditionInput
 ) {
-  deleteTask(input: $input, condition: $condition) {
+  deleteTodo(input: $input, condition: $condition) {
     id
-    title
+    name
+    priority
     description
-    status
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-  }
-}
-mutation CreateNote(
-  $input: CreateNoteInput!
-  $condition: ModelNoteConditionInput
-) {
-  createNote(input: $input, condition: $condition) {
-    id
-    content
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-  }
-}
-mutation UpdateNote(
-  $input: UpdateNoteInput!
-  $condition: ModelNoteConditionInput
-) {
-  updateNote(input: $input, condition: $condition) {
-    id
-    content
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-  }
-}
-mutation DeleteNote(
-  $input: DeleteNoteInput!
-  $condition: ModelNoteConditionInput
-) {
-  deleteNote(input: $input, condition: $condition) {
-    id
-    content
     createdAt
     updatedAt
     _version
