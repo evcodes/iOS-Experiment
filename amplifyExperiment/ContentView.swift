@@ -7,40 +7,58 @@
 
 import SwiftUI
 import Amplify
-import AWSDataStorePlugin
-
-
-func configureAmplify() {
-    let dataStorePlugin = AWSDataStorePlugin(modelRegistration: AmplifyModels())
-    do {
-        try Amplify.add(plugin: dataStorePlugin)
-        try Amplify.configure()
-        print("Initialized Amplify");
-    } catch {
-        // simplified error handling for the tutorial
-        print("Could not initialize Amplify: \(error)")
-    }
-}
+import Combine
 
 
 
 struct ContentView: View {
-    @State private var title: String = ""
-    @State private var password: String = ""
+    @State private var todoTitle: String = ""
+    @State private var todoDetails: String = ""
+    @State private var todoItemsQueried: [String] = []
+    @State var todoSubscription: AnyCancellable?
+
+    func performOnAppear(){
+//        subscribeTodos()
+    }
+    
+    func subscribeTodos() {
+        print("subscribeOnTodos called")
+        self.todoSubscription
+            = Amplify.DataStore.publisher(for: Todo.self)
+                .sink(receiveCompletion: { completion in
+                    print("Subscription has been completed: \(completion)")
+                }, receiveValue: { mutationEvent in
+                    print("Subscription got this value: \(mutationEvent)")
+
+                    do {
+                      let todo = try mutationEvent.decodeModel(as: Todo.self)
+
+                      switch mutationEvent.mutationType {
+                      case "create":
+                        print("Created: \(todo)")
+                      case "update":
+                        print("Updated: \(todo)")
+                      case "delete":
+                        print("Deleted: \(todo)")
+                      default:
+                        break
+                      }
+
+                    } catch {
+                      print("Model could not be decoded: \(error)")
+                    }
+                })
+    }
     
     func queryItems(){
         Amplify.DataStore.query(Todo.self) { result in
+                todoItemsQueried = []
                 switch(result) {
                 case .success(let todos):
+                    print(todos)
                     for todo in todos {
-                        print("==== Todo ====")
-                        print("Name: \(todo.name)")
-                        if let priority = todo.priority {
-                            print("Priority: \(priority)")
-                        }
-                        if let description = todo.description {
-                            print("Description: \(description)")
-                        }
+                        todoItemsQueried.append(todo.name)
+//
                     }
                 case .failure(let error):
                     print("Could not query DataStore: \(error)")
@@ -73,12 +91,14 @@ struct ContentView: View {
     }
     
     func saveItem(){
-        let item = Todo(name: "Wash car",
-                        description: "Vacuum Interior and Wax exterior.")
+        let item = Todo(name: todoTitle,
+                        description: todoDetails)
         Amplify.DataStore.save(item) { result in
             switch(result) {
             case .success(let savedItem):
                 print("Saved item: \(savedItem.name)")
+                todoTitle = ""
+                todoDetails = ""
             case .failure(let error):
                 print("Could not save item to DataStore: \(error)")
             }
@@ -112,35 +132,72 @@ struct ContentView: View {
     
     var body: some View {
         
+        
         VStack{
+            TextField("Todo title", text: $todoTitle)
+                .frame(width: 350, height: 50, alignment: .center)
+                .onAppear(perform: performOnAppear)
+            TextField("Todo details", text: $todoDetails)
+                .frame(width: 350, height: 250, alignment: .center)
+                
             
-            TextField("Title", text: $title)
-                .padding()
-            TextField("Password", text: $password)
-                .padding()
+//            HStack{
+//                Button("sign in") {
+//                    print("Sign in pressed")
+//                }.padding()
+//                Button("sign up") {
+//                    print("Sign up pressed")
+//                }
+//            }
+                
             
-            HStack{
-                Button("sign in") {
-                    print("Sign in pressed")
-                }.padding()
-                Button("sign up") {
-                    print("Sign up pressed")
-                }
-            }
-            Button("Save todo") {
-                saveItem()
-            }
-            Button("Query todos") {
+            Button(action: {
+                   saveItem()
+               }) {
+                   Text("Save Item")
+                       .frame(minWidth: 0, maxWidth: 300)
+                       .font(.system(size: 18))
+                       .padding()
+                       .foregroundColor(.white)
+                       .overlay(
+                           RoundedRectangle(cornerRadius: 25)
+                               .stroke(Color.white, lineWidth: 2)
+                   )
+               }
+               .background(Color.blue) // If you have this
+               .cornerRadius(25)
+                
+            Button(action: {
                 queryItems()
-            }
+                
+            }){
+                    Text("Query items")
+                        .frame(minWidth: 0, maxWidth: 300)
+                        .font(.system(size: 18))
+                        .padding()
+                        .foregroundColor(.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25)
+                                .stroke(Color.yellow, lineWidth: 2)
+                    )
+                
+                } .background(Color.orange) // If you have this
+                .cornerRadius(25)
+                 
             
-            Button("Update Todo title") {
-                updateItemName(prevName: "Pickup car", newName: "Wash car")
-            }
-
-            Button("Delete todo"){
-                deleteItem(itemName:"Wash car")
-            }
+//            Button("Update Todo title") {
+//                updateItemName(prevName: "Pickup car", newName: "Wash car")
+//            }
+//
+//            Button("Delete todo"){
+//                deleteItem(itemName:"Wash car")
+//            }
+            
+            Text("Our todo list contains: ")
+                        
+                ForEach(todoItemsQueried, id: \.self) { todo in
+                    Text(todo)
+                }
         }
         
     }

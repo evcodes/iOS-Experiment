@@ -19,7 +19,7 @@ extension Todo {
   public static let schema = defineSchema { model in
     let todo = Todo.keys
     
-    model.syncPluralName = "Todos"
+    model.pluralName = "Todos"
     
     model.fields(
       .id(),
